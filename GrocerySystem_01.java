@@ -10,6 +10,8 @@ public class GrocerySystem_01
     static String UNDERLINE = "\033[4m";
     static String RED = "\033[0;31m";
     static String GREEN = "\033[0;32m";
+    static String BLUE = "\033[0;34m";
+    static String YELLOW = "\033[0;33m";
 
     static Scanner in = new Scanner(System.in);
     static String[] categories = {"Dairy", "Snacks", "Bakery", "Vegetables", "Fruits", "Hygiene", "Beverages"};
@@ -56,7 +58,9 @@ public class GrocerySystem_01
 
     public static void main(String[] args) 
     {
-        System.out.println(ITALIC+""+BOLD+"Welcome to the Grocery Store!"+RESET);   
+        System.out.println(BLUE + BOLD + "*****************************************" + RESET);
+        System.out.println(ITALIC+BOLD+"*\tWelcome to the Grocery Store\t*"+RESET);   
+        System.out.println(BLUE + BOLD + "*****************************************" + RESET);
         Categories();
     }
         static void Categories()
@@ -75,7 +79,7 @@ public class GrocerySystem_01
             {
                 System.out.println((i + 1) + ". " + categories[i]);
             }
-            System.out.println(BOLD+"0. Exit"+RESET);
+            System.out.println(UNDERLINE+BOLD+"0. Exit"+RESET);
             System.out.print("Choose a category: ");
             categoryChoice = in.nextInt();
 
@@ -102,7 +106,7 @@ public class GrocerySystem_01
      {
         while (true) 
         {
-            System.out.println("\nItems in " + categories[categoryIndex] + ":");
+            System.out.println(YELLOW+"\nItems in " +BOLD+ categories[categoryIndex] + ":"+RESET);
             for (int i = 0; i < items[categoryIndex].length; i++)
              {
                 System.out.println((i + 1) + ". " + items[categoryIndex][i] + " - Stock: " + stocks[categoryIndex][i] + ", Price: Rs " + prices[categoryIndex][i]);
@@ -155,7 +159,7 @@ public class GrocerySystem_01
                 cartSize++;
             }
 
-            System.out.println("Added to cart successfully.");
+            System.out.println(GREEN+"Added to cart successfully."+RESET);
         } 
         else 
         {
@@ -201,7 +205,7 @@ public class GrocerySystem_01
 
     static void viewCart() 
     {
-        System.out.println("\nYour Cart:");
+        System.out.println(BOLD+"\nYour Cart:"+RESET);
         if (cartSize == 0) 
         {
             System.out.println("Cart is empty.");
@@ -214,103 +218,66 @@ public class GrocerySystem_01
         }
     }
 
-    static void modifyCart()
+    static void modifyCart() 
     {
         viewCart();
 
         if (cartSize == 0) 
-        return;
+            return;
 
         System.out.print("Enter item number to modify: ");
         int itemNumber = in.nextInt();
 
         if (itemNumber <= 0 || itemNumber > cartSize)
-        {
+         {
             System.out.println(RED+"Invalid item number."+RESET);
             return;
         }
 
         int index = itemNumber - 1;
-        System.out.println("1. Add stock");
-        System.out.println("2. Delete stock");
-        System.out.print("Choose an option: ");
-        int option = in.nextInt();
 
-        if (option == 1)
-         {
-            int availableStock = 0;
-            for (int i = 0; i < items.length; i++) 
-            {
-                for (int j = 0; j < items[i].length; j++) 
-                {
-                    if (items[i][j].equals(cartItems[index])) 
-                    {
-                        availableStock = stocks[i][j];
-                    }
-                }
-            }
-
-            System.out.println("Available stock: " + availableStock);
-            System.out.print("Enter quantity to add: ");
-            int addQuantity = in.nextInt();
-
-            if (addQuantity < 0 || addQuantity > availableStock)
-            {
-                System.out.println(RED+"Invalid quantity. Available stock: "+RESET + availableStock);
-                return;
-            }
-
-            for (int i = 0; i < items.length; i++) 
-            {
-                for (int j = 0; j < items[i].length; j++) 
-                {
-                    if (items[i][j].equals(cartItems[index])) 
-                    {
-                        stocks[i][j] -= addQuantity;
-                    }
-                }
-            }
-
-            cartQuantities[index] += addQuantity;
-            cartPrices[index] += (cartPrices[index] / cartQuantities[index]) * addQuantity;
-            System.out.println("Stock added successfully.");
-        } 
-        else if (option == 2) 
+        for (int i = 0; i < items.length; i++) 
         {
-            System.out.print("Enter quantity to delete: ");
-            int deleteQuantity = in.nextInt();
-            if (deleteQuantity < 0 || deleteQuantity > cartQuantities[index]) 
+            for (int j = 0; j < items[i].length; j++) 
             {
-                System.out.println(RED+"Invalid quantity."+RESET);
-                return;
-            }
-
-            for (int i = 0; i < items.length; i++)
-             {
-                for (int j = 0; j < items[i].length; j++)
-                 {
-                    if (items[i][j].equals(cartItems[index]))
-                     {
-                        stocks[i][j] += deleteQuantity;
-                    }
+                if (items[i][j].equals(cartItems[index]))
+                {
+                    System.out.println("Available Stock in system: "+UNDERLINE+stocks[i][j]+RESET);
                 }
             }
-
-            cartQuantities[index] -= deleteQuantity;
-            if (cartQuantities[index] == 0)
-             {
-                cartPrices[index] = 0;
-            }
-             else 
-            {
-                cartPrices[index] = (cartPrices[index] / (cartQuantities[index] + deleteQuantity)) * cartQuantities[index];
-            }
-            System.out.println("Stock deleted successfully.");
-        } 
-        else 
-        {
-            System.out.println("Invalid option.");
         }
+
+        System.out.print("Enter new quantity: ");
+        int newQuantity = in.nextInt();
+
+        if (newQuantity < 0) 
+        {
+            System.out.println(RED+"Invalid quantity."+RESET);
+            return;
+        }
+
+        int currentQuantity = cartQuantities[index];
+        int difference = newQuantity - currentQuantity;
+
+        for (int i = 0; i < items.length; i++) 
+        {
+            for (int j = 0; j < items[i].length; j++) 
+            {
+                if (items[i][j].equals(cartItems[index]))
+                {
+                    if (difference > 0 && difference > stocks[i][j])
+                     {
+                        System.out.println(RED+"Insufficient stock available."+RESET);
+                        return;
+                    }
+                    stocks[i][j] -= difference;
+                }
+            }
+        }
+
+        cartQuantities[index] = newQuantity;
+        cartPrices[index] = (cartPrices[index] / currentQuantity) * newQuantity;
+        System.out.println(GREEN+"Quantity updated successfully."+RESET);
     }
 
     static void clearCart() 
@@ -329,59 +296,77 @@ public class GrocerySystem_01
             }
         }
         cartSize = 0;
-        System.out.println("Cart cleared successfully.");
+        System.out.println(GREEN+"Cart cleared successfully."+RESET);
     }
 
-    static void generateBill()
-     {
-        System.out.println("\nYour Bill:");
+    static void generateBill() 
+    {
+        System.out.println(BOLD + "\nYour Bill:" + RESET);
         double total = 0;
+        double discount = 0;
+        System.out.printf("%-20s %-10s %-10s\n", ITALIC + "Item", "Quantity", "     Price" + RESET);
+        System.out.println("------------------------------------------");
         for (int i = 0; i < cartSize; i++) 
         {
-            System.out.println(cartItems[i] + " - Quantity: " + cartQuantities[i] + " - Price: Rs " + cartPrices[i]);
+            System.out.printf("%-20s %-10d Rs %-10.2f\n", cartItems[i], cartQuantities[i], cartPrices[i]);
             total += cartPrices[i];
         }
-        System.out.println(BOLD+"\n Total: Rs "+UNDERLINE + total +RESET);
-        System.out.println(GREEN+"\nEnter Payment Method: "+RESET);
+        System.out.println("------------------------------------------");
+
+        if (total > 2000)
+         {
+            discount += total * 0.02;
+            System.out.println(BOLD + "Discount: Rs " + UNDERLINE +discount+ RESET + "\n");
+        }
+        
+        System.out.println(BOLD+UNDERLINE+"Yout Total bill is: "+total+RESET);
+
+        System.out.println(GREEN + "\nEnter Payment Method: " + RESET);
         System.out.println("1. Cash");
-        System.out.println("2. Card");
-        System.out.println("3. UPI");
+        System.out.println("2. Card "+UNDERLINE+"(5% discount)"+RESET);
+        System.out.println("3. UPI " +UNDERLINE+"(10% discount)"+RESET);
 
         int paymentMethod = in.nextInt();
 
-        if (paymentMethod == 1) 
-        {
+        if (paymentMethod == 1)
+         {
             System.out.println("Enter the amount: ");
             double amount = in.nextDouble();
             if (amount < total) 
             {
-                System.out.println(RED+"Insufficient amount."+RESET);
+                System.out.println(RED + "Insufficient amount." + RESET);
                 return;
             }
-            System.out.println("Change: Rs " + (amount - total));
+            System.out.println("Change: Rs"+ (amount - total));
         }
-        else if (paymentMethod == 2) 
-        {
+         else if (paymentMethod == 2) 
+         {
+            discount += total * 0.05;       
+            total -= discount;
+            System.out.println("------------------------------------------");
+            System.out.println(BOLD + "Total after discount: Rs " + UNDERLINE + total + RESET);
             System.out.println("Enter card number: ");
             long cardNumber = in.nextLong();
             System.out.println("Enter CVV: ");
             int cvv = in.nextInt();
             System.out.println("Enter expiry date: ");
             String expiryDate = in.next();
-            System.out.println("Payment successful.");
-        }
+            System.out.println(GREEN + "Payment successful." + RESET);
+        } 
         else if (paymentMethod == 3) 
         {
-            //Bro Code - Java GUI - 1:38:00 (JOptionPane)
-            ImageIcon img = new ImageIcon("twss.jpeg");
-            //JOptionPane.showMessageDialog(null, "That's What She Said", "Michael Scott once said:", JOptionPane.PLAIN_MESSAGE);
-            JOptionPane.showMessageDialog(null, "Michael Scott once said: ", "The Quote", JOptionPane.PLAIN_MESSAGE, img);
+            discount += total * 0.10;
+            total -= discount;
+            System.out.println("------------------------------------------");
+            System.out.println(BOLD + "Total after discount: Rs " + UNDERLINE + total + RESET);
+            ImageIcon img = new ImageIcon("qrcode.png");
+            JOptionPane.showMessageDialog(null, "Scan QR to Pay", "UPI Scanner", JOptionPane.INFORMATION_MESSAGE, img);
+        } 
+        else
+         {
+            System.out.println(RED + "Invalid choice." + RESET);
         }
-        else 
-        {
-            System.out.println(RED+"Invalid choice."+RESET);
-        }
-        System.out.println(GREEN+"\n Thank you for shopping with us."+RESET);
+        System.out.println(BOLD + GREEN + "\n Thank you for shopping with us." + RESET);
         System.exit(0);
     }
 }
