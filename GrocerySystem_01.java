@@ -1,4 +1,5 @@
 import java.util.*;
+import javax.swing.*;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
@@ -12,6 +13,8 @@ public class GrocerySystem_01
     static String GREEN = "\033[0;32m";
     static String BLUE = "\033[0;34m";
     static String YELLOW = "\033[0;33m";
+    
+    static JFrame frame = new JFrame();
 
     static Scanner in = new Scanner(System.in);
     static String[] categories = {"Dairy", "Snacks", "Bakery", "Vegetables", "Fruits", "Hygiene", "Beverages"};
@@ -360,7 +363,7 @@ public class GrocerySystem_01
             System.out.println("------------------------------------------");
             System.out.println(BOLD + "Total after discount: Rs " + UNDERLINE + total + RESET);
             ImageIcon img = new ImageIcon("qrcode.png");
-            JOptionPane.showMessageDialog(null, "Scan QR to Pay", "UPI Scanner", JOptionPane.INFORMATION_MESSAGE, img);
+            JOptionPane.showMessageDialog(frame, "Scan QR to Pay", "UPI Scanner", JOptionPane.INFORMATION_MESSAGE, img);
         } 
         else
          {
